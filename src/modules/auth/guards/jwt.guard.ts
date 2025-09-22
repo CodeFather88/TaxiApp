@@ -1,13 +1,14 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { JwtAdapter } from '../adapters/jwt.adapter';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Inject } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { IUser } from 'src/shared/types';
 import { IS_PUBLIC_KEY } from 'src/shared/decorators';
+import { type IJwtAdapter } from '../domain/jwt.adapter.interface';
+import { TOKENS } from 'src/shared/types';
 
 @Injectable()
 export class JwtGuard implements CanActivate {
   constructor(
-    private readonly jwtAdapter: JwtAdapter,
+    @Inject(TOKENS.IJwtAdapter) private readonly jwtAdapter: IJwtAdapter,
     private reflector: Reflector,
   ) {}
 

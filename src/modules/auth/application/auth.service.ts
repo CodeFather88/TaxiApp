@@ -1,22 +1,21 @@
-import { Injectable, UnauthorizedException, ConflictException, Inject } from "@nestjs/common";
+import { Injectable, Inject } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
-import { JwtAdapter } from "../adapters/jwt.adapter";
 import { type UserEntity } from "../../users/domain/user.entity";
 import { RegisterDto } from "../dto/register.dto";
 import { type IJwtAdapter } from "../domain/jwt.adapter.interface";
-import { DrizzleUsersAdapter } from "src/modules/users/adapters/drizzle-users.adapter";
 import { type IAuthUserRepository } from "../domain/auth-user.repository";
+import { TOKENS, UnauthorizedError, ConflictError } from "src/shared/types";
 
 @Injectable()
 export class AuthService {
     constructor(
-        @Inject(DrizzleUsersAdapter) private readonly usersRepo: IAuthUserRepository,
-        @Inject(JwtAdapter) private readonly jwtAdapter: IJwtAdapter
+        @Inject(TOKENS.IAuthUserRepository) private readonly usersRepo: IAuthUserRepository,
+        @Inject(TOKENS.IJwtAdapter) private readonly jwtAdapter: IJwtAdapter
     ) { }
 
     async register(data: RegisterDto): Promise<UserEntity> {
         const existing = await this.usersRepo.findByPhone(data.phoneNumber);
-        if (existing) throw new ConflictException("User already exists");
+        if (existing) throw new ConflictError("User already exists");
 
         const hashed = await bcrypt.hash(data.password, 10);
         const user = await this.usersRepo.create({
@@ -30,10 +29,10 @@ export class AuthService {
 
     async login(phoneNumber: string, password: string) {
         const user = await this.usersRepo.findByPhone(phoneNumber);
-        if (!user) throw new UnauthorizedException("Invalid credentials");
+        if (!user) throw new UnauthorizedError("Invalid credentials");
 
         const valid = await bcrypt.compare(password, user.password);
-        if (!valid) throw new UnauthorizedException("Invalid credentials");
+        if (!valid) throw new UnauthorizedError("Invalid credentials");
 
         const token = await this.jwtAdapter.sign({ id: user.id, role: user.role });
         return { accessToken: token, user };

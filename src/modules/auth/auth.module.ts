@@ -7,6 +7,7 @@ import { DrizzleUsersAdapter } from "../users/adapters/drizzle-users.adapter";
 import { UserModule } from "../users/user.module";
 import { JwtGuard } from "./guards/jwt.guard";
 import { APP_GUARD } from "@nestjs/core";
+import { TOKENS } from "src/shared/types";
 
 @Module({
     imports: [
@@ -21,8 +22,8 @@ import { APP_GUARD } from "@nestjs/core";
         AuthService,
         JwtAdapter,
         { provide: APP_GUARD, useClass: JwtGuard },
-        { provide: "IJwtAdapter", useClass: JwtAdapter },
-        { provide: "IAuthUserRepository", useExisting: DrizzleUsersAdapter }
+        { provide: TOKENS.IJwtAdapter, useClass: JwtAdapter },
+        { provide: TOKENS.IAuthUserRepository, useExisting: DrizzleUsersAdapter }
     ],
 })
 export class AuthModule { }
