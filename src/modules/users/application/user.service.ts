@@ -1,13 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { type IUserRepository } from '../domain/user.repository';
-import { UpdatePasswordDto } from '../dto/update-password.dto';
-import * as bcrypt from "bcrypt";
+import { type IUserRepository } from '../domain/ports/user.repository.port';
+import { UpdatePasswordDto } from '../presenters/http/dto/update-password.dto';
+import { type IPasswordHasher } from "src/shared/security/password-hasher.port";
 import { TOKENS, NotFoundError, ValidationError } from 'src/shared/types';
 
 @Injectable()
 export class UserService {
     constructor(
-        @Inject(TOKENS.IUserRepository) private readonly userRepo: IUserRepository
+        @Inject(TOKENS.IUserRepository) private readonly userRepo: IUserRepository,
+        @Inject(TOKENS.IPasswordHasher) private readonly passwordHasher: IPasswordHasher,
     ) { }
 
     async updatePassword(userId: number, { oldPassword, newPassword }: UpdatePasswordDto) {
@@ -16,9 +17,9 @@ export class UserService {
         if (oldPassword === newPassword) {
             throw new ValidationError("Passwords are same")
         }
-        const isValid = await bcrypt.compare(oldPassword, user.password)
+        const isValid = await this.passwordHasher.compare(oldPassword, user.password)
         if (isValid) {
-            const hashedPassword = await bcrypt.hash(newPassword, 10)
+            const hashedPassword = await this.passwordHasher.hash(newPassword)
             const result = await this.userRepo.updatePassword(userId, hashedPassword)
             return result
         } else {

@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { UserService } from '../application/user.service';
-import { UpdatePasswordDto } from '../dto/update-password.dto';
+import { UserService } from '../../application/user.service';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 import { User } from 'src/shared/decorators';
 import { type IUser } from 'src/shared/types';
 

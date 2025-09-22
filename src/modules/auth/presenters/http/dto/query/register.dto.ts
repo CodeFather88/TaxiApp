@@ -1,7 +1,7 @@
-import { IsString, IsOptional, IsEnum, MinLength, Matches } from 'class-validator';
-import { UserRole } from 'src/modules/users/domain/user.types';
+import { IsString, IsOptional, IsEnum, MinLength } from 'class-validator';
+import { UserRole } from 'src/modules/users/domain/types/user.types';
 
-export class RegisterDto {
+export class RegisterQueryDto {
     @IsString()
     phoneNumber: string;
 

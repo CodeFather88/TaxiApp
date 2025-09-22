@@ -1,5 +1,5 @@
 import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
-import { UserRole } from "src/modules/users/domain/user.types";
+import { UserRole } from "src/modules/users/domain/types/user.types";
 
 
 export const users = pgTable("users", {

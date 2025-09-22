@@ -1,8 +1,8 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Inject } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { IUser } from 'src/shared/types';
+type JwtPayload = { id: number; role: string };
 import { IS_PUBLIC_KEY } from 'src/shared/decorators';
-import { type IJwtAdapter } from '../domain/jwt.adapter.interface';
+import { type IJwtAdapter } from '../../../domain/ports/jwt.port';
 import { TOKENS } from 'src/shared/types';
 
 @Injectable()
@@ -30,8 +30,8 @@ export class JwtGuard implements CanActivate {
     }
 
     try {
-      const payload = await this.jwtAdapter.verify(token);
-      request.user = payload as IUser;
+      const payload = await this.jwtAdapter.verify<JwtPayload>(token);
+      request.user = payload;
     } catch (error) {
       throw new UnauthorizedException('Invalid or expired token');
     }
