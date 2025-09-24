@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { type IUserRepository } from '../domain/ports/user.repository.port';
-import { UpdatePasswordDto } from '../presenters/http/dto/update-password.dto';
 import { type IPasswordHasher } from "src/shared/security/password-hasher.port";
-import { TOKENS, NotFoundError, ValidationError } from 'src/shared/types';
+import { TOKENS } from 'src/shared/types';
+import { NotFoundError, ValidationError } from 'src/shared/errors/domain-errors';
+import { UpdatePasswordCommand } from './commands/update-password.command';
 
 @Injectable()
 export class UserService {
@@ -11,7 +12,7 @@ export class UserService {
         @Inject(TOKENS.IPasswordHasher) private readonly passwordHasher: IPasswordHasher,
     ) { }
 
-    async updatePassword(userId: number, { oldPassword, newPassword }: UpdatePasswordDto) {
+    async updatePassword(userId: number, { oldPassword, newPassword }: UpdatePasswordCommand) {
         const user = await this.userRepo.findById(userId)
         if (!user) throw new NotFoundError('User not found')
         if (oldPassword === newPassword) {

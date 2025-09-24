@@ -15,13 +15,7 @@ export class AuthController {
 
     @Post("register")
     async register(@Body() body: RegisterQueryDto): Promise<RegisterResponseDto> {
-        const user = await this.authService.register({
-            phoneNumber: body.phoneNumber,
-            password: body.password,
-            name: body.name,
-            role: body.role
-        }
-        );
+        const user = await this.authService.register(body as RegisterCommand);
         return {
             id: user.id,
             phoneNumber: user.phoneNumber,
@@ -29,15 +23,11 @@ export class AuthController {
             role: user.role,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
-        };
+        }
     }
 
     @Post("login")
     async login(@Body() body: LoginQueryDto): Promise<LoginResponseDto> {
-        const cmd: LoginCommand = { phoneNumber: body.phoneNumber, password: body.password };
-        return this.authService.login({
-            password: body.password,
-            phoneNumber: body.phoneNumber
-        });
+        return this.authService.login(body as LoginCommand);
     }
 }

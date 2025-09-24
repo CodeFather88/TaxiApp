@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { AppError, NotFoundError, ConflictError, UnauthorizedError, ValidationError } from '../types';
+import { HttpErrorMapper } from '../errors/http-error.mapper';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -20,22 +20,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     private mapExceptionToHttp(exception: unknown): { status: number; message: string } {
-        if (exception instanceof UnauthorizedError) {
-            return { status: HttpStatus.UNAUTHORIZED, message: exception.message };
+        const mapped = HttpErrorMapper.resolve(exception);
+        if (mapped) {
+            return mapped;
         }
-        if (exception instanceof NotFoundError) {
-            return { status: HttpStatus.NOT_FOUND, message: exception.message };
-        }
-        if (exception instanceof ConflictError) {
-            return { status: HttpStatus.CONFLICT, message: exception.message };
-        }
-        if (exception instanceof ValidationError) {
-            return { status: HttpStatus.BAD_REQUEST, message: exception.message };
-        }
-        if (exception instanceof AppError) {
-            return { status: HttpStatus.BAD_REQUEST, message: exception.message };
-        }
-        // Fallback for unknown errors
         const message = exception instanceof Error ? exception.message : 'Internal server error';
         return { status: HttpStatus.INTERNAL_SERVER_ERROR, message };
     }

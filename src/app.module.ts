@@ -6,6 +6,7 @@ import { DrizzleModule } from './database/drizzle/drizzle.module';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import { UserModule } from './modules/users/application/user.module';
+import { HttpErrorRegistry } from './shared/errors/http-error.registry';
 
 @Module({
   imports: [UserModule, AuthModule, DrizzleModule],
@@ -15,4 +16,8 @@ import { UserModule } from './modules/users/application/user.module';
     { provide: APP_FILTER, useClass: HttpExceptionFilter },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  constructor() {
+    HttpErrorRegistry.registerDefaults();
+  }
+}

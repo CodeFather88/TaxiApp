@@ -3,7 +3,8 @@ import { type IPasswordHasher } from "src/shared/security/password-hasher.port";
 import { type AuthUser, type CreateAuthUser } from "../domain/types/auth-user.types";
 import { type IJwtAdapter } from "../domain/ports/jwt.port";
 import { type IAuthUserRepository } from "../domain/ports/auth-user.repository.port";
-import { TOKENS, UnauthorizedError, ConflictError } from "src/shared/types";
+import { TOKENS } from "src/shared/types";
+import { ConflictError, UnauthorizedError } from "src/shared/errors/domain-errors";
 import { RegisterCommand } from "./commands/register.command";
 import { LoginCommand } from "./commands/login.command";
 

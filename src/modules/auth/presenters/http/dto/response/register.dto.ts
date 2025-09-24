@@ -6,5 +6,3 @@ export class RegisterResponseDto {
   createdAt: Date;
   updatedAt: Date;
 }
-
-
