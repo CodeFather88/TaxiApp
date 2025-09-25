@@ -1,7 +1,7 @@
-import { HttpStatus } from "@nestjs/common";
+import { HttpStatus, BadRequestException, UnauthorizedException, NotFoundException, ConflictException } from "@nestjs/common";
 import { HttpErrorMapper } from "./http-error.mapper";
 import { AppError } from "./app-error";
-import { ConflictError, NotFoundError, UnauthorizedError, ValidationError } from "./domain-errors";
+import { BadRequestError, ConflictError, NotFoundError, UnauthorizedError, ValidationError } from "./domain-errors";
 
 export class HttpErrorRegistry {
     static registerDefaults(): void {
@@ -10,5 +10,6 @@ export class HttpErrorRegistry {
         HttpErrorMapper.register(NotFoundError, HttpStatus.NOT_FOUND);
         HttpErrorMapper.register(ConflictError, HttpStatus.CONFLICT);
         HttpErrorMapper.register(ValidationError, HttpStatus.BAD_REQUEST);
+        HttpErrorMapper.register(BadRequestError, HttpStatus.BAD_REQUEST);
     }
 }

@@ -6,10 +6,16 @@ import { DrizzleModule } from './database/drizzle/drizzle.module';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import { UserModule } from './modules/users/application/user.module';
+import { RoutingModule } from './modules/routing/application/routing.module';
 import { HttpErrorRegistry } from './shared/errors/http-error.registry';
 
 @Module({
-  imports: [UserModule, AuthModule, DrizzleModule],
+  imports: [
+    UserModule,
+    AuthModule,
+    RoutingModule,
+    DrizzleModule
+  ],
   controllers: [AppController],
   providers: [
     AppService,
